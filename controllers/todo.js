@@ -45,9 +45,38 @@ const editTodo = (req,res)=>{
      .catch(err=>{res.status(500).send({message:'error findbyid edit todo',err})})
 }
 
+const completedTodo = (req,res)=>{
+  
+    Todo.findById(req.params.id)
+     .then(doc=>{
+         doc.status = true;
+         doc.save()
+          .then(result=>{
+              res.status(200).send({message:'todo completed',data:result})
+          })
+          .catch(err=>{res.status(500).send({message:'error save completed todo',err})})
+     })
+     .catch(err=>{res.status(500).send({message:'error findbyid completed todo',err})})
+}
+
+const uncompletedTodo = (req,res)=>{
+    Todo.findById(req.params.id)
+     .then(doc=>{
+         doc.status = false;
+         doc.save()
+          .then(result=>{
+              res.status(200).send({message:'todo uncompleted',data:result})
+          })
+          .catch(err=>{res.status(500).send({message:'error save uncompleted todo',err})})
+     })
+     .catch(err=>{res.status(500).send({message:'error findbyid uncompleted todo',err})})
+}
+
 module.exports = {
     createTodo,
     findMyTodo,
     deleteTodo,
-    editTodo
+    editTodo,
+    completedTodo,
+    uncompletedTodo
 }
