@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Facebook Login JavaScript Example</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script src="./assets/fbapi.js"></script>
+    <script src="action.js"></script>
+    <!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+--> <input type="text" id="todoadd">
+    <button class="addtodo" onclick="addTodo()">
+        add todo
+    </button>
+    <br>
+    <input type="text" name="" id="todoedit">
+    <button onclick="confirmEdit()">
+        edit todo name
+    </button>
+    <br>
+    <div>
+        <h1>heres your list of todos: </h1>
+    </div>
+    <div class="todolist">
+        
+    </div>
+    <button>
+        complenation
+    </button>
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+        </fb:login-button>
+
+</body>
+
+</html>
