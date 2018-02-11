@@ -38,6 +38,7 @@ const editTodo = (req,res)=>{
          doc.name = req.body.name;
          doc.save()
           .then(result=>{
+              console.log('asasa')
               res.status(200).send({message:'data updated',data:result})
           })
           .catch(err=>{res.status(500).send({message:'error save edit',err})})
