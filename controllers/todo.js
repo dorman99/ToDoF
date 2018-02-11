@@ -25,11 +25,45 @@ const findMyTodo = (req,res)=>{
      .catch(err=>{res.status(500).send({message:'error find my todo',err})})
 }
 
+const deleteTodo = (req,res)=>{
+    Todo.remove({"_id":req.params.id})
+     .then(doc=>{res.status(200).send({message:'todo has been deleted ',doc})})
+     .catch(err=>{res.status(500).send({message:'error delete todo',err})})
+}
+
+
 const editTodo = (req,res)=>{
-    ß
+    Todo.findById(req.params.id)
+     .then(doc=>{
+         doc.name = req.body.name;
+         doc.save()
+          .then(result=>{
+              console.log('asasa')
+              res.status(200).send({message:'data updated',data:result})
+          })
+          .catch(err=>{res.status(500).send({message:'error save edit',err})})
+     })
+     .catch(err=>{res.status(500).send({message:'error findbyid edit todo',err})})
+}
+
+const completenationTodo = (req,res)=>{
+  
+    Todo.findById(req.params.id)
+     .then(doc=>{
+         doc.status = !doc.status;
+         doc.save()
+          .then(result=>{
+              res.status(200).send({message:'todo completed',data:result})
+          })
+          .catch(err=>{res.status(500).send({message:'error save completed todo',err})})
+     })
+     .catch(err=>{res.status(500).send({message:'error findbyid completed todo',err})})
 }
 
 module.exports = {
     createTodo,
-    findMyTodo
+    findMyTodo,
+    deleteTodo,
+    editTodo,
+    completenationTodo
 }
