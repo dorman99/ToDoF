@@ -80,14 +80,27 @@ function testAPI() {
             console.log(response)
             localStorage.setItem('arrayTodo',response.data.dataTodo)
             response.data.dataTodo.forEach(row=>{
-                $(".todolist").append(`
-                  <input type="checkbox" name="" id="checkbox-${row._id}">
+                if(row.status){
+                    $(".todolist").append(`
+                     <div id="todo-${row._id}">
+                  <input checked onclick="complenation('${row._id}')" type="checkbox" name="" id="checkbox">
+                  <label id="label-${row._id}" for="${row._id}">${row.name.strike()}</label>
+                  <button onclick="editTodo('${row._id}')" id="editTodo-${row._id}">edit</button>
+                  <button onclick="deleteTodo('${row._id}')" id="deleteTodo-${row._id}">delete</button>
+                  <br>
+                  </div>
+                `)
+                }else{
+                    $(".todolist").append(`
+                <div id="todo-${row._id}">
+                  <input onclick="complenation('${row._id}')" type="checkbox" name="" id="checkbox-${row._id}">
                   <label id="label-${row._id}" for="${row._id}">${row.name}</label>
                   <button onclick="editTodo('${row._id}')" id="editTodo-${row._id}">edit</button>
-                  <button onclick="editTodo('${response.data.data._id}')" id="deleteTodo-${response.data.data._id}">delete</button>
+                  <button onclick="deleteTodo('${row._id}')" id="deleteTodo-${row._id}">delete</button>
                   <br>
-
+                  </div>
                 `)
+                }
                
             })
             localStorage.setItem('accessTokenJwt', response.data.data)
