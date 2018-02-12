@@ -53,6 +53,7 @@ function confirmEdit (){
            }else{
                label.html(response.data.data.name)
            }
+            localStorage.removeItem('todoIdEdit')
             $('#todoedit').val(' ')
             
         })
@@ -90,6 +91,14 @@ function deleteTodo(idTodo){
             })
     }
 }
+
+function logoutFb(){
+    FB.logout(function (response) {
+        localStorage.clear();
+        location.reload()
+    });
+}
+
 
 
 

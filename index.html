@@ -15,24 +15,33 @@
   Below we include the Login Button social plugin. This button uses
   the JavaScript SDK to present a graphical Login button that triggers
   the FB.login() function when clicked.
---> <input type="text" id="todoadd">
-    <button class="addtodo" onclick="addTodo()">
-        add todo
-    </button>
-    <br>
-    <input type="text" name="" id="todoedit">
-    <button onclick="confirmEdit()">
-        edit todo name
-    </button>
-    <br>
-    <div>
-        <h1>heres your list of todos: </h1>
+-->
+    <div hidden class="loggedin">
+        <input type="text" id="todoadd">
+        <button class="addtodo" onclick="addTodo()">
+            add todo
+        </button>
+        <br>
+        <input type="text" name="" id="todoedit">
+        <button onclick="confirmEdit()">
+            edit todo name
+        </button>
+        <br>
+        <div>
+            <h1>heres your list of todos: </h1>
+        </div>
+        <div class="todolist">
+
+        </div>
+
+        <button onclick="logoutFb()">
+            logout fb
+        </button>
     </div>
-    <div class="todolist">
-        
-    </div>
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    <div class="fbButton">
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
         </fb:login-button>
+    </div>
 
 </body>
 

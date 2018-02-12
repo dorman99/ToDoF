@@ -75,7 +75,8 @@ function testAPI() {
             }
         })
         .then(function (response) {
-  
+            $(".loggedin").fadeIn('slow')
+            $(".fbButton").hide()
             console.log('tex')
             console.log(response)
             localStorage.setItem('arrayTodo',response.data.dataTodo)
@@ -83,7 +84,7 @@ function testAPI() {
                 if(row.status){
                     $(".todolist").append(`
                      <div id="todo-${row._id}">
-                  <input checked onclick="complenation('${row._id}')" type="checkbox" name="" id="checkbox">
+                  <input checked onclick="complenation('${row._id}')"type="checkbox" name="" id="checkbox">
                   <label id="label-${row._id}" for="${row._id}">${row.name.strike()}</label>
                   <button onclick="editTodo('${row._id}')" id="editTodo-${row._id}">edit</button>
                   <button onclick="deleteTodo('${row._id}')" id="deleteTodo-${row._id}">delete</button>
