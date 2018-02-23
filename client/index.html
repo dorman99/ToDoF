@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/assets/css/flipclock.css">
+   
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+    <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <title>ToDo FAnCY!</title>
+</head>
+
+
+<body>
+    <div id="app" v-if="true" >
+        
+        <header-vue > </header-vue>
+        <navbar-vue  @parent-todo="setTodo($event)"  @set-token-parent="changeToken($event)"  :name="name" ></navbar-vue>
+        <body-vue  :showmenu="showMenu" v-if="showMenu"  @add-todo-parent="newTodo($event)" @delete-todo-parent="deleteTodo($event)" @edit-name-parent="changename($event)" @parent-change-stat="changestat($event)" :main-menu="todos">
+        
+        </body-vue>
+        
+        <script src="/assets/js/flipclock/flipclock.min.js"></script>
+        <footer-vue></footer-vue>
+    </div>
+
+
+    <template id="header-template">
+        <section class="hero is-warning">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        ToDo - Fancy
+                    </h1>
+                    <h2 class="subtitle">
+                        Know What To-Do !
+                    </h2>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id=navbar-template>
+        
+        <nav class="navbar is-danger" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <img src="./todo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="50" height="40">
+                </a>
+        
+                <div class="navbar-burger" data-target="navMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+        
+                <div class="navbar-menu" id="navMenu">
+                    <div class="navbar-start">
+                        <div style="padding-top:10px">
+
+                        
+                                <fb-login @add-todo="todoToParent" @set-token="sentParentToken"></fb-login>
+                            
+                           
+
+
+                        </div>
+                    </div>
+        
+                    <div class="navbar-end">
+                        <a class="navbar-item">
+                            
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+            </div>
+         </nav>
+    </template>
+
+    <template id="body-template">
+        <section class="hero is-medium is-dark is-bold">
+            <div class="hero-body">
+                <div class="container">
+                   
+                        <tile-vue @add-todo="addTodo($event)" @delete-todo="deleteTodo" @edit-name="editName" @change-stat="changeStat($event)" :todos="mainMenu" ></tile-vue>
+                   
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="footer-template">
+        <footer class="footer">
+            <div class="container">
+                <div class="content has-text-centered">
+                    <p>
+                        <strong>ToDo-Fancy</strong> by
+                        <a href="abdillah.com">Hafizh Abdillah</a>. The source code is licensed
+                        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content is licensed
+                        <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </template>
+
+    <template id="fblogin">
+        <!-- button fb disni -->
+        <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false"
+             data-auto-logout-link="true" data-use-continue-as="false" onlogin="checkLoginState()" scope="public_profile,email," @click="checkLoginState()">
+        </div>
+    </template>
+
+    <template id="todoMenu-template">
+        <div  class="tile is-ancestor">
+            <div class="tile is-vertical is-8">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                       
+                        <article class="tile is-child notification is-warning">
+                            <p class="title">Add Your ToDo Here</p>
+                            <div class="control">
+                                <input  v-model="add" class="input" type="text" placeholder="Text input">
+                            </div>
+                            <a @click.prevent="addTodo" class="button is-danger">Add Todo</a>
+                            <hr>
+                            <hr>
+                            <p class="title">Change Your ToDo Name Here</p>
+                            <p style="color:darkmagenta" class="subtitle"><i>(press edit first)</i></p>
+                            <div class="control">
+                                <input class="input" v-model="editplace"  type="text"  placeholder="Text input">
+                            </div>
+                            <a href="" @click.prevent="changetodo" class="button is-success">Change Todo Name</a>
+                        </article>
+                    </div>
+                    <div class="tile is-parent">
+                        <article class="tile  is-child notification is-info">
+                            <p class="title">Wat Gif Will Present to You ! </p>
+                            <p class="subtitle">Push The Button Bewllooww</p>
+                            <figure class="image is-4by3">
+                                <img :src="img">
+                            </figure>
+                            <a @click="giphy" class="button is-primary"> push me !</a>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child notification is-success">
+                    <div class="content">
+                        <p class="title">Your ToDo-List</p>
+                        <p class="subtitle">With even more content</p>
+                        <div class="column" v-for="todo in todos">
+                            <div id="todo._id" v-if="todo.status == false " style="justify-content: space-around">
+                                <input  @click="complenation(todo._id)" type="checkbox" name="" id="checkbox">
+                                <label id="label-todo._id" for="todo._id">{{todo.name}}</label>
+                                <button class="button is-warning" @click="editTodo(todo._id,todo.name)" id="editTodo-todo.id">edit</button>
+                                <button  class="button is-danger" @click="deleteTodo(todo._id)" id="deleteTodo-todo._id">delete</button>
+                                <br>
+                            </div>
+
+                            <div v-if="todo.status == true" id="todo._id" style="justify-content: space-around">
+                                <input @click="complenation(todo._id)" type="checkbox" name="" id="checkbox" checked>
+                                <label id="label-todo._id" for="todo._id"><s>{{todo.name}}</s></label>
+                                <button class="button is-warning" @click="editTodo(todo._id,todo.name)" id="editTodo-todo.id">edit</button>
+                                <button class="button is-danger" @click="deleteTodo(todo._id)" id="deleteTodo-todo._id">delete</button>
+                                <br>
+                            </div>
+                            <hr>    
+                        </div>
+                        <div class="content">
+                            <!-- Content -->
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        
+        Vue.component('header-vue',{
+            template:'#header-template',
+            data:function(){
+                return{}
+            },
+          
+        })
+
+        Vue.component('navbar-vue',{
+            template: "#navbar-template",
+             props: {
+                name: {
+                    type: String
+                }
+            
+            },
+            methods:{
+                todoToParent(val) {
+                    // console.log('add parent navbar')
+                    this.$emit('parent-todo',val)
+                },
+                sentParentToken(Value){
+                    // console.log('ini set parent token')
+                    this.$emit('set-token-parent',Value)
+                }
+            }
+        })
+
+        Vue.component('body-vue',{
+            template:"#body-template",
+            props :['main-menu','showmenu'],
+            data(){
+                return{
+                    editplace:'',
+                    popmenu:true
+                }
+            },
+            methods:{
+                changeStat(val){
+                    console.log('body-vue',val)
+                    this.$emit('parent-change-stat',val)
+                }, editName(val){
+                    console.log('masuk body lagi',val)
+                    this.$emit('edit-name-parent',val)
+                }, deleteTodo(id){
+                    console.log('ini body delte',id)
+                    this.$emit('delete-todo-parent',id)
+                }, addTodo(task){
+                    this.$emit('add-todo-parent',task)
+                }
+            },
+            watch : {
+                showmenu: function(val){
+                    console.log(val,'ini val watcher')
+                    if(val){
+                        this.popmenu = true
+                    }else{
+                        this.popmenu = false
+                    }
+                }   
+            }
+        })
+
+        Vue.component('footer-vue',{
+            template:"#footer-template"
+        })
+
+       
+
+        Vue.component('fb-login',{
+            template:"#fblogin",
+            data(){
+                return{
+                    accessToken: null,
+                    
+                }
+            },
+            methods:{
+                checkLoginState(){
+                    // console.log('masuk sini fb ')
+                    // console.log(this.props[0])
+                    // console.log('massuk state')
+                    let self = this
+                    // method FB disni sama nembak axios
+                     FB.getLoginStatus(function (response) {
+                         
+                        if (response.status == 'connected') {
+                            
+                            console.log(response,'ini response')
+                            localStorage.accessToken = response.authResponse.accessToken
+                            localStorage.userId = response.authResponse.userID
+                            self.$emit('set-token', localStorage.accessToken)
+                            axios.post('http://localhost:3000/signin',{},{
+                                headers:{
+                                    accesstokenfb : localStorage.accessToken
+                                }
+                            })
+                            .then(resp=>{
+                                console.log(resp.data.userdoc,'ini resp')
+                                console.log(resp.data.data,'ini resp')
+                                localStorage.name = resp.data.userdoc.name
+                                localStorage.setItem("jwt",resp.data.data)
+                               
+                                localStorage.todos = resp.data.dataTodo
+                                self.$emit('add-todo',resp.data.dataTodo)
+                            }).catch(err=>{console.log(err)})
+                          
+                        } else if (response.status == 'not_authorized' || response.status == "unknown") {
+                             localStorage.clear();
+                            localStorage.removeItem("accessToken")
+                            localStorage.removeItem("userId")
+                            localStorage.removeItem("todos")
+                            localStorage.removeItem("jwt")
+                            localStorage.clear()
+                            self.$emit('add-todo','')
+                            self.token = null
+                           
+                           
+                        }
+                    })
+                }
+            },
+            created:function(){
+                window.fbAsyncInit = function () {
+                    
+                    FB.init({
+                        appId: '1801532450140524',
+                        cookie: true,
+                        xfbml: true,
+                        version: 'v2.11'
+                    });
+                };
+                (function (d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) { return; }
+                    js = d.createElement(s); js.id = id;
+                    js.src = "https://connect.facebook.net/en_US/sdk.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+                
+                window.checkLoginState = this.checkLoginState;
+                console.log('ini refresh token', localStorage.accessToken)
+                if(localStorage.accessToken !== undefined){
+                     axios.post('http://localhost:3000/signin', {}, {
+                        headers: {
+                            accesstokenfb: localStorage.accessToken
+                        }
+                    })
+                        .then(resp => {
+                            console.log('ini refresh', resp)
+                            localStorage.setItem("jwt", resp.data.data)
+                            localStorage.todos = resp.data.dataTodo
+                            this.$emit('add-todo', resp.data.dataTodo)
+                            this.$emit('set-token', localStorage.accessToken)
+                            localStorage.name = resp.data.userdoc.name
+                            this.accessToken = localStorage.getItem('accessToken');
+                        }).catch(err => {
+                            console.log(err)
+
+                        })
+                }
+               
+                    
+                
+            
+            }
+        })
+         Vue.component('tile-vue', {
+                template: "#todoMenu-template",
+                props:['todos'],
+                data() {
+                    return {
+                      editplace:'',
+                      id: '',
+                      todo:'',
+                      add:'',
+                      img:''
+                    }
+                },methods:{
+                    addTodo(){
+                        this.$emit('add-todo',this.add)
+                        this.add = ''
+                    },
+                    complenation(id){
+                        let self = this
+                        // console.log('masuk sini',localStorage.jwt)
+                        axios.put(`http://localhost:3000/todos/${id}/completenation`, {}, {
+                            headers: {
+                                accesstokenjwt: localStorage.jwt
+                            }
+                        }).then(function(response){
+                            swal("Good job!", "Status Todo Kamu Berhasil Diupdate", "success");
+                            self.$emit('change-stat', response.data.data._id)
+                        })
+                        .catch(err=>{
+                            console.log(err)
+                        })
+                    }, editTodo(id,name){
+                        this.editplace = name
+                        this.id = id
+                        this.todo=name
+                        
+                       
+                    }, changetodo(){
+                        let self  = this
+                         axios.put(`http://localhost:3000/todos/${self.id}`, {
+                            name: self.editplace
+                                }, {
+                                headers: {
+                                    accessTokenJwt: localStorage.jwt
+                                }
+                            }).then(response=>{
+                                let objedit = {
+                                    _id: self.id,
+                                    name: self.editplace
+                                }
+                                console.log(objedit)
+                                 this.$emit('edit-name', objedit)
+                                console.log('masuk change todo ini')
+                                self.id = ''
+                                self.editplace=''
+                            }).catch(err=>{
+                                console.log(err)
+                            })
+                        
+                    }, deleteTodo(id){
+                        this.$emit('delete-todo',id)
+                        console.log('masuk di tile delete',id)
+                    },giphy(){
+                            if(this.todos.length >0){
+                                   let self = this
+                                var xhr = $.get("https://api.giphy.com/v1/gifs/random?api_key=N8k9oqqcKVcKDRaACc1iI4ch15Oz1mxo&tag=&rating=G");
+                                xhr.done(function (data) {
+                                    console.log(data)
+                                    // console.log(t)
+                                    // console.log("success got data", data);
+                                    // console.log(data.data[Math.floor(Math.random()*data.data.length)].images.downsized.url)
+                                    self.img = data.data.image_url
+
+                                });
+                            }
+                           
+                        
+                    }  
+                }
+
+            })
+
+            new Vue({   
+                el: '#app',
+                data: {
+                    name:"welcome... ! "+localStorage.getItem('name'),
+                    todoMenu: false,
+                    showMenu:false,
+                    todos : [],
+                    token:null
+                   
+                },
+                methods:{
+                    newTodo(val){
+                        let self = this
+
+                        console.log('masuk parent',val)
+                         axios.post('http://localhost:3000/todos', {
+                            name: val}, {
+                                headers: {
+                                     accesstokenjwt: localStorage.jwt
+                                }
+                        }).then(response=>{
+                            swal("Good job!", "ToDo Kamu Berhasil Ditambahkan!", "success");
+                            self.todos.push(response.data.data)
+                           
+                        })
+                    },
+                    changeToken(changeValue){
+                        // console.log('masuk',changeValue)
+                        this.token = changeValue
+                    },
+                    setTodo(val){
+                        console.log('ini val',val.length)
+                        if(val.length == 0 ){
+                             this.showMenu = false
+                        }else{
+                            this.showMenu = true
+                        }
+                        this.todos =  val
+                    }, changestat(val){
+                        console.log('masuk parent',val)
+                        this.todos.filter(el=>{
+                            if(el._id == val){
+                                return el.status = !el.status
+                            }
+                        })
+                    }, changename(val){
+                        console.log(val,'ini parent')
+                        this.todos.filter(el=>{
+                            if(el._id == val._id){
+                                return el.name = val.name
+                            }
+                        })
+                    }, deleteTodo(id){
+                        let self =  this
+
+                        swal({
+                            title: "Are you sure?",
+                            text: "Once deleted, you will not be able to recover this imaginary file!",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+
+                                     axios.delete(`http://localhost:3000/todos/${id}`, {
+                                        headers: {
+                                            accesstokenjwt: localStorage.jwt
+                                        }
+                                    }).then(response => {
+                                        if (response) {
+                                            self.todos.filter((el, idx) => {
+                                                if (el._id == id) {
+
+                                                    return self.todos.splice(idx, 1)
+                                                }
+                                            })
+                                        }
+                                    }).catch(err => { console.log(err) })
+                                    swal("Poof! Todo Kamu Berhasil Dihapus!", {
+                                        icon: "success",
+                                    })
+
+                                } else {
+                                    swal("ToDo Kamu tidak jadi dihapus ;)!");
+                                }
+                            });
+                        
+                    }
+                },created(){
+                    console.log(localStorage.getItem('accessToken') == null)
+                    if(localStorage.getItem('accessToken')==null){
+                        // this.showMenu = !this.showMenu
+                        // this.todos = []
+                        
+                    }
+                }
+
+            })  
+    </script>
+</body>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+  // Get all "navbar-burger" elements
+  var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+  // Check if there are any navbar burgers
+  if ($navbarBurgers.length > 0) {
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach(function ($el) {
+      $el.addEventListener('click', function () {
+
+        // Get the target from the "data-target" attribute
+        var target = $el.dataset.target;
+        var $target = document.getElementById(target);
+
+        // Toggle the class on both the "navbar-burger" and the "navbar-menu"
+        $el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+
+      });
+    });
+  }
+
+});
+</script>
+
+
+</html>
+
